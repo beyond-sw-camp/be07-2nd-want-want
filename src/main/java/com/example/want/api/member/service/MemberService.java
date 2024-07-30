@@ -2,6 +2,7 @@ package com.example.want.api.member.service;
 
 import com.example.want.api.member.domain.Member;
 import com.example.want.api.member.dto.GetInvitationDto;
+import com.example.want.api.member.dto.ProfileImageRqDto;
 import com.example.want.api.member.repository.MemberRepository;
 import com.example.want.api.project.domain.Project;
 import com.example.want.api.project.repository.ProjectRepository;
@@ -73,5 +74,13 @@ public class MemberService {
 
         projectMember.setInvitationAccepted("Y");
         projectMemberRepository.save(projectMember);
+    }
+
+    // 구글 로그인 시 구글 프로필 사진이 프로필 이미지가 됨 -> 우리 서비스에서만 이용할 프로필 사진을 등록하는 건 결국 "수정"이 됨.
+    public Member updateProfileImage(String email, ProfileImageRqDto profileImageRqDto) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Member not found"));
+        member.updateProfileImage(profileImageRqDto.getProfileUrl());
+        return memberRepository.save(member);
     }
 }

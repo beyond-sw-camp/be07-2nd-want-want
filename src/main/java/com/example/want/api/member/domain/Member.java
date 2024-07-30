@@ -32,4 +32,10 @@ public class Member{
         this.profileUrl = userInfo.getProfileImageUrl();
         this.role = Role.MEMBER;
     }
+
+    public void updateProfileImage(String profileUrl) {
+        this.profileUrl = profileUrl;
+    }
+
+
 }

@@ -3,8 +3,10 @@ package com.example.want.api.member.controller;
 import com.example.want.api.member.domain.Member;
 import com.example.want.api.member.dto.AcceptInvitationDto;
 import com.example.want.api.member.dto.GetInvitationDto;
+import com.example.want.api.member.dto.ProfileImageRqDto;
 import com.example.want.api.member.login.UserInfo;
 import com.example.want.api.member.service.MemberService;
+import com.example.want.common.CommonResDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -46,5 +48,12 @@ public class MemberController {
         String email = userInfo.getEmail();
         memberService.acceptInvitation(email, dto.getProjectId());
         return new ResponseEntity<>("Invitation accepted successfully.", HttpStatus.OK);
+    }
+
+    @PatchMapping("/profile/image")
+    public ResponseEntity<?> updateProfileImage(@AuthenticationPrincipal UserInfo userInfo,
+                                                @RequestBody ProfileImageRqDto profileImageRqDto) {
+        Member updatedMember = memberService.updateProfileImage(userInfo.getEmail(), profileImageRqDto);
+        return new ResponseEntity<>(new CommonResDto(HttpStatus.OK, "Success", updatedMember.getProfileUrl()), HttpStatus.OK);
     }
 }
