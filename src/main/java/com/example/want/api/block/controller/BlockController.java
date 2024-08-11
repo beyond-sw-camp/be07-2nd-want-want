@@ -38,10 +38,15 @@ public class BlockController {
 
     @Operation(summary = "블록 활성화 안된 리스트(완료, 근데 카테고리가 없어서 이거 못쓸듯)")
     @GetMapping("/project/{projectId}/not/active/block/list")
-    public ResponseEntity<Object> getNotActiveBlockList(@PathVariable Long projectId  , @PageableDefault(size = 10) Pageable pageable, @AuthenticationPrincipal UserInfo userInfo) {
-        Page<BlockActiveListRsDto> blockList = blockService.getNotActiveBlockList(projectId,pageable, userInfo.getEmail());
+    public ResponseEntity<Object> getNotActiveBlockList(
+            @PathVariable Long projectId,
+            @AuthenticationPrincipal UserInfo userInfo,
+            @RequestParam(required = false) String searchCategory) {
+        List<BlockActiveListRsDto> blockList = blockService.getNotActiveBlockList(projectId, userInfo.getEmail(), searchCategory);
         return new ResponseEntity<>(new CommonResDto(HttpStatus.OK, "Success", blockList), HttpStatus.OK);
     }
+
+
 
     @Operation(summary = "블록 활성화된 리스트(완료) 이것도 날짜가 없는데 되려나?")
     @GetMapping("/project/{projectId}/active/block/list")

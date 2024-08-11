@@ -5,6 +5,7 @@ import com.example.want.api.project.domain.Project;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 
 
 @Repository
-public interface BlockRepository extends JpaRepository<Block, Long> {
+public interface BlockRepository extends JpaRepository<Block, Long>, JpaSpecificationExecutor<Block> {
     Page<Block> findByProjectIdAndIsActivatedOrderByHeartCountDesc(Long projectId, String isActivated, Pageable pageable);
     // 선택한 일자의 일정만 조회
     Page<Block> findAllByStartTimeBetweenOrderByStartTimeAsc(LocalDateTime localDateTime, LocalDateTime localDateTime1, Pageable pageable);

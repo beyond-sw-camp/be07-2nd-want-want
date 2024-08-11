@@ -16,14 +16,20 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Predicate;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,11 +61,37 @@ public class BlockService {
         return project;
     }
 
-    public Page<BlockActiveListRsDto> getNotActiveBlockList(Long projectId, Pageable pageable, String memberEmail) {
+    public List<BlockActiveListRsDto> getNotActiveBlockList(Long projectId, String memberEmail, String searchCategory) {
         Project project = validateProjectMember(projectId, memberEmail);
-        Page<Block> blocks = blockRepository.findAllByProjectAndIsActivated(project, "N", pageable);
-        return blocks.map(BlockActiveListRsDto::fromEntity);
+
+        // Specification 객체를 사용하여 동적 쿼리 생성
+        Specification<Block> specification = new Specification<Block>() {
+            @Override
+            public Predicate toPredicate(Root<Block> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                List<Predicate> predicates = new ArrayList<>();
+                // 프로젝트 ID에 대한 조건 추가
+                predicates.add(criteriaBuilder.equal(root.get("project"), project));
+                // 활성화 여부에 대한 조건 추가
+                predicates.add(criteriaBuilder.equal(root.get("isActivated"), "N"));
+                // 카테고리 검색 조건 추가
+                if (searchCategory != null && !searchCategory.isEmpty()) {
+                    predicates.add(criteriaBuilder.like(root.get("category"), "%" + searchCategory + "%"));
+                }
+                // 조건들을 AND로 결합
+                return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+            }
+        };
+
+        // 모든 블록을 페이징 없이 조회
+        List<Block> blocks = blockRepository.findAll(specification);
+
+        // BlockActiveListRsDto로 변환하여 반환
+        return blocks.stream()
+                .map(BlockActiveListRsDto::fromEntity)
+                .collect(Collectors.toList());
     }
+
+
 
     public Page<BlockActiveListRsDto> getActiveBlockList(Long projectId, String memberEmail , Pageable pageable) {
         Project project = validateProjectMember(projectId, memberEmail);

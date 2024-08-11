@@ -13,7 +13,8 @@ import java.util.List;
 public enum Category {
     SPOT("관광지"),
     RESTAURANT("음식점"),
-    CAFE("카페"),;
+    CAFE("카페"),
+    ETC("기타");
 
     private final String value;
 
