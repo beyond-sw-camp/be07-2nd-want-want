@@ -52,8 +52,8 @@ public class BlockController {
 
     @Operation(summary = "블록 상세조회 (완료)")
     @GetMapping("/block/{id}/detail")
-    public ResponseEntity<Object> getBlock(@PathVariable Long id) {
-        BlockDetailRsDto block = blockService.getBlockDetail(id);
+    public ResponseEntity<Object> getBlock(@PathVariable Long id, @AuthenticationPrincipal UserInfo userInfo) {
+        BlockDetailRsDto block = blockService.getBlockDetail(id, userInfo.getEmail());
         return new ResponseEntity<>(new CommonResDto(HttpStatus.OK, "Success", block), HttpStatus.OK);
     }
 
