@@ -22,6 +22,7 @@ public class InvitationResDto {
     private LocalDateTime createdTime;
     private String startTravel;
     private String endTravel;
+    private String inviterName;
     // todo 여행 장소 추가
     private List<ProjectDetailRsDto.ProjectStateList> projectStates;
 }

@@ -39,6 +39,8 @@ public class ProjectMember extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Authority authority;
 
+    private String inviterName;
+
     public void updateIsExist(String isExist) {
         this.isExist = isExist;
     }

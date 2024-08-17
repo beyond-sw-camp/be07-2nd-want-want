@@ -47,6 +47,8 @@ public class MemberService {
             Project project = projectRepository.findById(projectMember.getProject().getId())
                     .orElseThrow(() -> new EntityNotFoundException("Project Not found"));
 
+            String inviterName = projectMember.getInviterName();
+
             InvitationResDto invitationResDto = InvitationResDto.builder()
                     .projectId(project.getId())
                     .projectTitle(project.getTitle())
@@ -62,6 +64,7 @@ public class MemberService {
                                     .city(projectState.getState().getCity())
                                     .build())
                             .collect(Collectors.toList()))
+                    .inviterName(inviterName)
                     .build();
             invitationResDtos.add(invitationResDto);
         }

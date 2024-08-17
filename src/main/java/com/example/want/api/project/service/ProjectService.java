@@ -149,7 +149,8 @@ public class ProjectService {
                 .project(project)
                 .member(otherMember)
                 .authority(Authority.MEMBER)
-                .invitationAccepted("N") // 초대 수락을 하면 "Y"로 변경
+                .invitationAccepted("N")
+                .inviterName(member.getName())// 초대 수락을 하면 "Y"로 변경
                 .build();
 
         projectMemberRepository.save(projectMember);
