@@ -40,7 +40,7 @@ public class BlockActiveListRsDto {
                 .endTime(block.getEndTime() != null ? block.getEndTime().toString() : null)
                 .heartCount(block.getHeartCount())
                 .isActivated(block.getIsActivated())
-                .popularCount(block.getPopularCount())
+                .popularCount(0L)
                 .build();
     }
 

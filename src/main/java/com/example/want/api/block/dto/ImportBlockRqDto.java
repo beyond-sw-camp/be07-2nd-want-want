@@ -20,6 +20,8 @@ public class ImportBlockRqDto {
                 .project(project)
                 .heartCount(0L)
                 .isActivated("N")
+                .latitude(findBlock.getLatitude())
+                .longitude(findBlock.getLongitude())
                 .build();
     }
 }
