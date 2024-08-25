@@ -14,14 +14,15 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 public class Location {
-//    블록에 추가되면 로케이션에 갱신
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String country;
     private String city;
-
+    private String latitude;
+    private String longitude;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "state_id")

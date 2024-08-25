@@ -34,7 +34,9 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -371,13 +373,36 @@ public class BlockService {
         List<BlockActiveListRsDto> blockDtos = new ArrayList<>();
         State state = stateRepository.findById(stateId)
                 .orElseThrow(() -> new EntityNotFoundException("State not found"));
+
         List<Project> projects = projectRepository.findByProjectStatesState(state);
+
         for (Project project : projects) {
             blocks.addAll(blockRepository.findAllByProject(project));
         }
+
+        Map<String, BlockActiveListRsDto> blockDtoMap = new HashMap<>();
         for (Block block : blocks) {
-            blockDtos.add(BlockActiveListRsDto.fromEntity(block));
+            // key 는 블럭의 "위도, 경도"
+            String key = block.getLatitude() + ","+ block.getLongitude();
+
+            // 지금 for 문을 도는 블럭의 위도, 경도가 dto 리스트에 이미 있는지 비교하기 위해
+            // dto 리스트에서 key 값을 찾는다.
+            BlockActiveListRsDto foundBlockdto = blockDtoMap.get(key);
+
+            // 만약 key 가 비어있지 않다면, 해당 "위도,경도" 를 가지는 블럭이 이미 있다는 뜻이므로
+            // 지금 for 문을 도는 블럭은 추가되지 않고, 기존에 있던 dto 리스트에 있는 블럭의 popularCount 값만 ++ 해준다.
+            if(foundBlockdto != null){
+                // 해당 key 값을 가지는 dto 리스트 안의 블럭의 count ++.
+                foundBlockdto.incrementPopularCount();
+            }
+            else{
+                BlockActiveListRsDto newDto = BlockActiveListRsDto.fromEntity(block);
+                blockDtoMap.put(key, newDto);
+            }
         }
+
+        blockDtos.addAll(blockDtoMap.values());
+
         return blockDtos;
     }
 

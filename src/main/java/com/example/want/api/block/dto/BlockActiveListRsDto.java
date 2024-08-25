@@ -24,6 +24,7 @@ public class BlockActiveListRsDto {
     private Category category;
     private String isActivated;
     private Boolean isHearted;
+    private Long popularCount;
 
 
     public static BlockActiveListRsDto fromEntity(Block block) {
@@ -39,6 +40,15 @@ public class BlockActiveListRsDto {
                 .endTime(block.getEndTime() != null ? block.getEndTime().toString() : null)
                 .heartCount(block.getHeartCount())
                 .isActivated(block.getIsActivated())
+                .popularCount(block.getPopularCount())
                 .build();
+    }
+
+    public void incrementPopularCount() {
+        if (this.popularCount == null) {
+            this.popularCount = 1L;
+        } else {
+            this.popularCount++;
+        }
     }
 }

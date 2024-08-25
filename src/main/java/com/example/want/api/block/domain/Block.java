@@ -37,6 +37,7 @@ public class Block extends BaseEntity {
     private String isActivated;
     private Long heartCount;
     private String isDeleted;
+    private Long popularCount;
   
     @Builder.Default
     private boolean isHearted = false;
