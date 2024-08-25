@@ -382,6 +382,9 @@ public class BlockService {
 
         Map<String, BlockActiveListRsDto> blockDtoMap = new HashMap<>();
         for (Block block : blocks) {
+            if (block.getLatitude() == null || block.getLongitude() == null) {
+                continue;
+            }
             // key 는 블럭의 "위도, 경도"
             String key = block.getLatitude() + ","+ block.getLongitude();
 
